@@ -4,7 +4,7 @@
 #define L 1000
 #define dist 15
 
-#define len (int)(L/dist+2)
+#define len (int)(L/dist+1)
 
 typedef struct {
     int x;
@@ -12,16 +12,13 @@ typedef struct {
     bool alive;
 } Cell;
 
-Cell cells[(int)(L/dist)];
+Cell cells[len];
 
 void init_cells() {
     int c = 0;
     for (int i=0; i<L; i+=dist) {
         cells[c].x = i;
         cells[c].y = i;
-
-        if (c % 2 == 0)
-            cells[c].alive = true;
 
         c++;
     }
@@ -34,10 +31,12 @@ void draw_grid() {
     }
 }
 
-void live() {
+void live(int pos_x, int pos_y) {
     for (int y=0; y < len; y++) {
         for (int x=0; x < len; x++) {
-            if (cells[x].alive)
+
+            /* if (cells[x].alive) */
+            if (cells[x].x == pos_x && cells[y].y == pos_y)
                 DrawRectangle(cells[x].x, cells[y].y, dist, dist, YELLOW);
         }
     }
@@ -51,12 +50,15 @@ int main() {
 
     int n_cells = (int)((L*L)/(dist*dist));
 
+    int x = 0;
+    int y = 0;
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
 
-        live();
+        live(x, y);
         draw_grid();
 
         EndDrawing();
