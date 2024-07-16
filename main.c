@@ -2,8 +2,9 @@
 #include <raylib.h>
 
 #define L 1000
+#define dist 15
 
-int pos[L][2];
+#define len (int)(L/dist+2)
 
 typedef struct {
     int x;
@@ -11,26 +12,34 @@ typedef struct {
     bool alive;
 } Cell;
 
-int init_grid(int dist) {
-    int len = 0;
+Cell cells[(int)(L/dist)];
+
+void init_cells() {
+    int c = 0;
     for (int i=0; i<L; i+=dist) {
-        pos[len][0] = i;
-        pos[len][1] = i;
-        len++;
-    }
-    return len;
-}
+        cells[c].x = i;
+        cells[c].y = i;
 
-void draw_grid(int dist) {
-    for (int i=0; i < init_grid(dist); i++) {
-        DrawLine(pos[i][0], 0, pos[i][0], L, WHITE);
-        DrawLine(0, pos[i][1], L, pos[i][1], WHITE);
+        if (c % 2 == 0)
+            cells[c].alive = true;
+
+        c++;
     }
 }
 
-void print_grid(int dist) {
-    for (int i=0; i<init_grid(dist); i++) {
-        printf("%d\n", pos[i][0]);
+void draw_grid() {
+    for (int i=0; i < len; i++) {
+        DrawLine(cells[i].x, 0, cells[i].x, L, WHITE);
+        DrawLine(0, cells[i].y, L, cells[i].y, WHITE);
+    }
+}
+
+void live() {
+    for (int y=0; y < len; y++) {
+        for (int x=0; x < len; x++) {
+            if (cells[x].alive)
+                DrawRectangle(cells[x].x, cells[y].y, dist, dist, YELLOW);
+        }
     }
 }
 
@@ -38,22 +47,17 @@ int main() {
     InitWindow(L, L, "GoL");
     SetTargetFPS(30);
 
-    int dist = 15;
+    init_cells(dist);
 
-    init_grid(dist);
-
-    Cell c;
-    c.x = pos[10][0];
-    c.y = pos[10][1];
-    c.alive = true;
+    int n_cells = (int)((L*L)/(dist*dist));
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawRectangle(c.x, c.y, dist, dist, YELLOW);
 
-        draw_grid(dist);
+        live();
+        draw_grid();
 
         EndDrawing();
     }
