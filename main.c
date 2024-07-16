@@ -5,6 +5,7 @@
 #define dist 15
 
 #define len (int)(L/dist+1)
+#define n_cells len*len
 
 typedef struct {
     int x;
@@ -12,15 +13,14 @@ typedef struct {
     bool alive;
 } Cell;
 
-Cell cells[len];
+Cell cells[n_cells];
 
 void init_cells() {
-    int c = 0;
-    for (int i=0; i<L; i+=dist) {
-        cells[c].x = i;
-        cells[c].y = i;
-
-        c++;
+    for (int y=0; y<L; y+=dist) {
+        for (int x=0; x<L; x+=dist) {
+            cells[x/dist].x = x;
+            cells[y/dist].y = y;
+        }
     }
 }
 
@@ -31,7 +31,7 @@ void draw_grid() {
     }
 }
 
-void live(int pos_x, int pos_y) {
+void draw_cell(int pos_x, int pos_y) {
     for (int y=0; y < len; y++) {
         for (int x=0; x < len; x++) {
 
@@ -42,23 +42,31 @@ void live(int pos_x, int pos_y) {
     }
 }
 
+bool state(int x, int y) {
+    for (int i=-1; i<=1; i++) {
+        for (int j=-1; j<=1; j++) {
+            DrawRectangle(x + j*dist, y + i*dist, dist, dist, RED);
+        }
+    }
+}
+
 int main() {
     InitWindow(L, L, "GoL");
     SetTargetFPS(30);
 
     init_cells(dist);
 
-    int n_cells = (int)((L*L)/(dist*dist));
 
-    int x = 0;
-    int y = 0;
+    int x = 5*dist;
+    int y = 5*dist;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
 
-        live(x, y);
+        state(x, y);
+        draw_cell(x, y);
         draw_grid();
 
         EndDrawing();
