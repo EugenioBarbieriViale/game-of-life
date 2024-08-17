@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <raylib.h>
-#include <unistd.h>
 
 #define L 800
 #define size 30
@@ -72,6 +71,14 @@ void play(int cells[l][l], int next_gen[l][l]) {
     next_generation(cells, next_gen);
 }
 
+void select_cells(int cells[l][l], Vector2 mouse) {
+    int x = (int)(mouse.x / size);
+    int y = (int)(mouse.y / size);
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        cells[y][x] = 1;
+}
+
 int main() {
     int cells[l][l];
     int next_gen[l][l];
@@ -80,35 +87,37 @@ int main() {
     alloc_zeroes(next_gen);
 
     InitWindow(L, L, "GoL");
-    SetTargetFPS(30);
-
-    cells[10][10] = 1;
-    cells[10][11] = 1;
-    cells[10][12] = 1;
-    cells[11][9]  = 1;
-    cells[11][10] = 1;
-    cells[11][11] = 1;
+    SetTargetFPS(10);
 
     int count = 0;
-    bool mode = true;
+    bool mode = false;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        /* sleep(1); */
-        WaitTime(1);
+        Vector2 mouse = GetMousePosition();
+        /* WaitTime(0.4); */
 
         if (IsKeyPressed(KEY_SPACE)) {
             count++;
             if (count % 2 == 1)
-                mode = false;
-            else
                 mode = true;
+            else
+                mode = false;
+        }
+
+        if (IsKeyPressed(KEY_C)) {
+            alloc_zeroes(cells);
+            alloc_zeroes(next_gen);
+            mode = false;
+            count++;
         }
 
         if (mode)
             play(cells, next_gen);
+        else
+            select_cells(cells, mouse);
 
         for (int i=0; i<l; i++) {
             for (int j=0; j<l; j++) {
