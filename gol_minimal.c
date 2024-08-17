@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <raylib.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
-#define L 800
-#define size 30
+#define L 900
+#define size 15
 
 #define l (int)(L/size)
 
@@ -14,10 +16,18 @@ void draw_grid() {
     }
 }
 
-void alloc_zeroes(int cells[l][l]) {
+void init_zeroes(int cells[l][l]) {
     for (int i=0; i<l; i++) {
         for (int j=0; j<l; j++) {
             cells[i][j] = 0;
+        }
+    }
+}
+
+void init_rand(int cells[l][l]) {
+    for (int i=0; i<l; i++) {
+        for (int j=0; j<l; j++) {
+            cells[i][j] = (rand() % 2);
         }
     }
 }
@@ -34,8 +44,9 @@ int count_neighbours(int x, int y, int cells[l][l]) {
     int nei = 0;
     for (int i=-1; i<=1; i++) {
         for (int j=-1; j<=1; j++) {
-            if (cells[y + i][x + j] == 1 && (j != 0 || i != 0))
-                nei++;
+            if (y+i >= 0 && y+i <= l && x+j >= 0 && x+j <= l)
+                if (cells[y + i][x + j] == 1 && (j != 0 || i != 0))
+                    nei++;
         }
     }
 
@@ -61,37 +72,51 @@ void draw_cells(int x, int y, int cells[l][l]) {
         DrawRectangle(x*size, y*size, size, size, YELLOW);
 }
 
+void initialize(int choose, int cells[l][l], int next_gen[l][l]) {
+    if (choose == 0) {
+        init_zeroes(cells);
+        init_zeroes(next_gen);
+
+        cells[20][20] = 1;
+        cells[21][21] = 1;
+        cells[22][21] = 1;
+        cells[22][20] = 1;
+        cells[22][19] = 1;
+
+        /* cells[10][10] = 1; */
+        /* cells[10][11] = 1; */
+        /* cells[10][12] = 1; */
+        /* cells[11][9] = 1; */
+        /* cells[11][10] = 1; */
+        /* cells[11][11] = 1; */
+
+        /* cells[20][20] = 1; */
+        /* cells[20][21] = 1; */
+        /* cells[21][20] = 1; */
+        /* cells[21][21] = 1; */
+
+        /* cells[19][20] = 1; */
+        /* cells[20][20] = 1; */
+        /* cells[21][20] = 1; */
+
+    } else {
+        srand(time(NULL));
+        init_rand(next_gen);
+        next_generation(cells, next_gen);
+    }
+}
+
 int main() {
     int cells[l][l];
     int next_gen[l][l];
 
-    alloc_zeroes(cells);
-    alloc_zeroes(next_gen);
+    int zeroes = 0;
+    int random = 1;
+
+    initialize(random, cells, next_gen);
 
     InitWindow(L, L, "GoL");
     SetTargetFPS(30);
-
-    /* cells[20][20] = 1; */
-    /* cells[21][21] = 1; */
-    /* cells[22][21] = 1; */
-    /* cells[22][20] = 1; */
-    /* cells[22][19] = 1; */
-
-    cells[10][10] = 1;
-    cells[10][11] = 1;
-    cells[10][12] = 1;
-    cells[11][9] = 1;
-    cells[11][10] = 1;
-    cells[11][11] = 1;
-
-    /* cells[20][20] = 1; */
-    /* cells[20][21] = 1; */
-    /* cells[21][20] = 1; */
-    /* cells[21][21] = 1; */
-
-    /* cells[19][20] = 1; */
-    /* cells[20][20] = 1; */
-    /* cells[21][20] = 1; */
 
     while (!WindowShouldClose()) {
         BeginDrawing();
