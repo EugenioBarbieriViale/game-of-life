@@ -121,7 +121,7 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        WaitTime(1);
+        WaitTime(0.3);
 
         for (int i=0; i<l; i++) {
             for (int j=0; j<l; j++) {
