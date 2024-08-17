@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 #define L 800
-#define size 15
+#define size 30
 
 #define l (int)(L/size)
 
@@ -14,7 +14,7 @@ void draw_grid() {
     }
 }
 
-void alloc_cells(int cells[l][l]) {
+void alloc_zeroes(int cells[l][l]) {
     for (int i=0; i<l; i++) {
         for (int j=0; j<l; j++) {
             cells[i][j] = 0;
@@ -22,7 +22,7 @@ void alloc_cells(int cells[l][l]) {
     }
 }
 
-void alloc_gen(int cells[l][l], int gen[l][l]) {
+void next_generation(int cells[l][l], int gen[l][l]) {
     for (int i=0; i<l; i++) {
         for (int j=0; j<l; j++) {
             cells[i][j] = gen[i][j];
@@ -57,51 +57,64 @@ void update_cells(int x, int y, int nei, int cells[l][l], int gen[l][l]) {
 }
 
 void draw_cells(int x, int y, int cells[l][l]) {
-    if (cells[y][x] == 1) // or gen
+    if (cells[y][x] == 1)
         DrawRectangle(x*size, y*size, size, size, YELLOW);
+}
+
+void play(int cells[l][l], int next_gen[l][l]) {
+    for (int i=0; i<l; i++) {
+        for (int j=0; j<l; j++) {
+            int nei = count_neighbours(j, i, cells);
+            update_cells(j, i, nei, cells, next_gen);
+        }
+    }
+
+    next_generation(cells, next_gen);
 }
 
 int main() {
     int cells[l][l];
     int next_gen[l][l];
 
-    alloc_cells(cells);
-    alloc_cells(next_gen);
+    alloc_zeroes(cells);
+    alloc_zeroes(next_gen);
 
     InitWindow(L, L, "GoL");
     SetTargetFPS(30);
 
-    cells[20][20] = 1;
-    cells[21][21] = 1;
-    cells[22][21] = 1;
-    cells[22][20] = 1;
-    cells[22][19] = 1;
+    cells[10][10] = 1;
+    cells[10][11] = 1;
+    cells[10][12] = 1;
+    cells[11][9]  = 1;
+    cells[11][10] = 1;
+    cells[11][11] = 1;
 
-    /* cells[20][20] = 1; */
-    /* cells[20][21] = 1; */
-    /* cells[21][20] = 1; */
-    /* cells[21][21] = 1; */
-
-    /* cells[19][20] = 1; */
-    /* cells[20][20] = 1; */
-    /* cells[21][20] = 1; */
+    int count = 0;
+    bool mode = true;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        sleep(1);
+        /* sleep(1); */
+        WaitTime(1);
+
+        if (IsKeyPressed(KEY_SPACE)) {
+            count++;
+            if (count % 2 == 1)
+                mode = false;
+            else
+                mode = true;
+        }
+
+        if (mode)
+            play(cells, next_gen);
 
         for (int i=0; i<l; i++) {
             for (int j=0; j<l; j++) {
-                int nei = count_neighbours(j, i, cells);
-
                 draw_cells(j, i, cells);
-                update_cells(j, i, nei, cells, next_gen);
             }
         }
-
-        alloc_gen(cells, next_gen);
 
         draw_grid();
 

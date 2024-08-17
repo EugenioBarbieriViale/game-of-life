@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <raylib.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <time.h>
 
 #define L 900
@@ -122,7 +121,7 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        sleep(1);
+        WaitTime(1);
 
         for (int i=0; i<l; i++) {
             for (int j=0; j<l; j++) {
