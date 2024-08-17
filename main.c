@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <raylib.h>
 
-#define L 800
+#define L 900
 #define size 30
 
 #define l (int)(L/size)
@@ -75,8 +75,12 @@ void select_cells(int cells[l][l], Vector2 mouse) {
     int x = (int)(mouse.x / size);
     int y = (int)(mouse.y / size);
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        cells[y][x] = 1;
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (cells[y][x] == 0)
+            cells[y][x] = 1;
+        else 
+            cells[y][x] = 0;
+    }
 }
 
 int main() {
@@ -87,7 +91,7 @@ int main() {
     alloc_zeroes(next_gen);
 
     InitWindow(L, L, "GoL");
-    SetTargetFPS(10);
+    SetTargetFPS(15);
 
     int count = 0;
     bool mode = false;
