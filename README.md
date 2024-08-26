@@ -9,7 +9,7 @@ You need [raylib](https://www.raylib.com/) installed.
 $ chmod +x build.sh
 $ ./build.sh
 ```
-You should now see two executables. Run:
+You should now see an executable file. Run:
 ```console
 $ ./main
 ```
