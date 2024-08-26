@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <raylib.h>
 
 #define L 900
@@ -17,6 +18,14 @@ void alloc_zeroes(int cells[l][l]) {
     for (int i=0; i<l; i++) {
         for (int j=0; j<l; j++) {
             cells[i][j] = 0;
+        }
+    }
+}
+
+void alloc_rand(int cells[l][l]) {
+    for (int i=0; i<l; i++) {
+        for (int j=0; j<l; j++) {
+            cells[i][j] = (rand() % 2);
         }
     }
 }
@@ -115,6 +124,13 @@ int main() {
             alloc_zeroes(cells);
             alloc_zeroes(next_gen);
             mode = false;
+            count++;
+        }
+
+        if (IsKeyPressed(KEY_R)) {
+            alloc_rand(next_gen);
+            next_generation(cells, next_gen);
+            mode = true;
             count++;
         }
 
