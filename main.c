@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <raylib.h>
 
 #define L 900
-#define size 30
+#define size 15
 
 #define l (int)(L/size)
 
@@ -128,6 +129,7 @@ int main() {
         }
 
         if (IsKeyPressed(KEY_R)) {
+            srand(time(NULL));
             alloc_rand(next_gen);
             next_generation(cells, next_gen);
             mode = true;
