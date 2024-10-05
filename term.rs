@@ -6,19 +6,21 @@ const WIDTH: usize = HEIGHT * 2;
 fn main() {
     let mut states = [[false; WIDTH]; HEIGHT];
 
-    let mut x: usize = 4;
-    let mut y: usize = 4;
+    states[4][4] = true;
 
-    let vel = 1;
+    run(&states);
+}
 
+fn run(states: &[[bool; WIDTH]; HEIGHT]) {
     loop {
-        if x < WIDTH-1 && y < HEIGHT-1 {
-            x += vel;
+        for y in 0..HEIGHT {
+            for x in 0..WIDTH {
+                let n = count_neighbours(x, y, &states);
+
+                draw(x, y, &states);
+            }
+            println!("");
         }
-
-        states[y][x] = true;
-
-        draw(&states);
     }
 }
 
@@ -40,18 +42,11 @@ fn count_neighbours(x: usize, y: usize, states: &[[bool; WIDTH]; HEIGHT]) -> usi
     n
 }
 
-fn draw(states: &[[bool; WIDTH]; HEIGHT]) {
-    for y in 0..HEIGHT {
-        for x in 0..WIDTH {
-            if states[y][x] {
-                print!("@");
-            }
-            else {
-                print!(".");
-            }
-
-            let n = count_neighbours(x, y, &states);
-        }
-        println!("");
+fn draw(x: usize, y: usize, states: &[[bool; WIDTH]; HEIGHT]) {
+    if states[y][x] {
+        print!("@");
+    }
+    else {
+        print!(".");
     }
 }
